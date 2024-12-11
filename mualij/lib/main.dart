@@ -12,7 +12,7 @@ import 'package:mualij/models/user_model.dart';
 import 'package:mualij/router.dart';
 import 'package:mualij/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-
+//testing git
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
