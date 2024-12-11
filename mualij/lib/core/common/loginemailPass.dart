@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mualij/features/auth/controlller/signin_controller.dart';
+import 'package:mualij/features/auth/screens/login_screen.dart';
+import 'package:mualij/theme/pallete.dart';
+
+class LoginEmailPass extends ConsumerWidget {
+  const LoginEmailPass({super.key});
+
+  void signInWithEmailPass(BuildContext context, WidgetRef ref) {
+    final email = ref.read(emailProvider); // Get email from state
+    final password = ref.read(passwordProvider); // Get password from state
+    ref
+        .read(SigninControllerProvider.notifier)
+        .signInWithEmailAndPassword(email, password, context);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(SigninControllerProvider); // Watch loading state
+
+    return ElevatedButton(
+      onPressed: isLoading
+          ? null // Disable button when loading
+          : () => signInWithEmailPass(context, ref),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Pallete.blueButtonColor,
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: isLoading
+          ? const CircularProgressIndicator(
+              color: Color(0xFF00B87C),
+            )
+          : const Text(
+              'Login',
+              style: TextStyle(fontSize: 18, color: Pallete.whiteColor),
+            ),
+    );
+  }
+}
