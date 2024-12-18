@@ -10,19 +10,23 @@ class SearchRepository {
 
   SearchRepository({required FirebaseFirestore firestore}) : _firestore = firestore;
 
- // Search Users with Substring Matching
+// Search Users with Substring Matching and Exclude Guests
 Stream<List<Map<String, dynamic>>> searchUsers(String query) {
   if (query.isEmpty) return Stream.value([]);
   return _firestore.collection('users').snapshots().map((snapshot) {
     return snapshot.docs
         .map((doc) => doc.data())
-        .where((data) => data['username']
-            .toString()
-            .toLowerCase()
-            .contains(query.toLowerCase()))
+        .where((data) =>
+            data['username']
+                .toString()
+                .toLowerCase()
+                .contains(query.toLowerCase()) &&
+            data['isAuthenticated'] == true) // Filter only authenticated users
         .toList();
   });
 }
+
+
 
 // Search Communities with Substring Matching
 Stream<List<Map<String, dynamic>>> searchCommunities(String query) {

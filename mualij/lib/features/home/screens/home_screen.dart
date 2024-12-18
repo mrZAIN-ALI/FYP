@@ -111,7 +111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Routemaster.of(context).push('/add-post');
         break;
       case 2:
-        // Navigate to AI models page
+        Routemaster.of(context).push('/ai-options');
         break;
       case 3:
         Routemaster.of(context).push('/');

@@ -2,6 +2,8 @@
 // loggedIn
 
 import 'package:flutter/material.dart';
+import 'package:mualij/features/ai/ai_options_screen.dart';
+import 'package:mualij/features/ai/hear_dis_screen.dart';
 import 'package:mualij/features/auth/screens/login_screen.dart';
 import 'package:mualij/features/auth/screens/resetpassword_screen.dart';
 import 'package:mualij/features/auth/screens/setpassowrd_screen.dart';
@@ -82,5 +84,8 @@ final loggedInRoute = RouteMap(
             postId: routeData.pathParameters['id']!,
           ),
         ),
+
+    '/ai-options': (_) => const MaterialPage(child: AIOptionsScreen()),
+    // '/heart-disease': (_) => const MaterialPage(child: HeartDiseaseScreen()),
   },
 );
