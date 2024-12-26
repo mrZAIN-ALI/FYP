@@ -75,6 +75,7 @@ class LoginScreen extends ConsumerWidget {
                         labelText: 'Email',
                         border: OutlineInputBorder(),
                       ),
+                      
                     ),
                     const SizedBox(height: 20),
 

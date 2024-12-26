@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Validators {
   Validators._();
 
-  static String? Function(String?)? validateEmail() {
+  static String? Function(String?)? validateEmail(String email) {
     return (String? value) {
       if (value == null || value.isEmpty) {
         return 'Please enter an email address';
@@ -15,7 +15,7 @@ class Validators {
     };
   }
 
-  static String? Function(String?)? validatePassword() {
+  static String? Function(String?)? validatePassword(String pass) {
     return (String? value) {
       if (value == null || value.isEmpty) {
         return 'Please enter a password';

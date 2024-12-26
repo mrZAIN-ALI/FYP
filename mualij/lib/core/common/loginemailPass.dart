@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mualij/core/validators.dart';
 import 'package:mualij/features/auth/controlller/signin_controller.dart';
 import 'package:mualij/features/auth/screens/login_screen.dart';
 import 'package:mualij/theme/pallete.dart';
@@ -17,12 +18,19 @@ class LoginEmailPass extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLoading = ref.watch(SigninControllerProvider); // Watch loading state
+    final isLoading =
+        ref.watch(SigninControllerProvider); // Watch loading state
 
     return ElevatedButton(
       onPressed: isLoading
           ? null // Disable button when loading
-          : () => signInWithEmailPass(context, ref),
+          : () {
+              final email = ref.read(emailProvider); // Get email from state
+              final pass = ref.read(passwordProvider); // Get email from state
+              Validators.validateEmail(email);
+              Validators.validatePassword(pass);
+              signInWithEmailPass(context, ref);
+            },
       style: ElevatedButton.styleFrom(
         backgroundColor: Pallete.blueButtonColor,
         minimumSize: const Size(double.infinity, 50),
