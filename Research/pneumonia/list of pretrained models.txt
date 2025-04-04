@@ -1,0 +1,35 @@
+Here are several pre-trained models that you can use for pneumonia detection from chest X-rays:
+
+ResNet Family:
+
+ResNet50, ResNet101
+These models are known for their deep residual connections, which help in training very deep networks efficiently.
+
+DenseNet Family:
+
+DenseNet121, DenseNet169, DenseNet201
+DenseNet models promote feature reuse through dense connections, which can be beneficial in capturing subtle differences in medical images.
+
+VGG Family:
+
+VGG16, VGG19
+Despite being older architectures, VGG models are still popular due to their simplicity and strong performance when fine-tuned on specific tasks.
+
+Inception Family:
+
+InceptionV3, InceptionResNetV2
+These models incorporate multiple kernel sizes in parallel, allowing them to capture features at various scales.
+
+EfficientNet Family:
+
+EfficientNetB0, EfficientNetB1, etc.
+EfficientNet models achieve high accuracy with fewer parameters by balancing network depth, width, and resolution.
+
+MobileNet Family:
+
+MobileNetV2
+Designed for resource-constrained environments, MobileNet models can be effective for applications requiring faster inference or deployment on edge devices.
+
+Xception:
+
+Xception uses depthwise separable convolutions, making it efficient while capturing complex features.
