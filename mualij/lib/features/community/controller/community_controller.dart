@@ -13,7 +13,27 @@ import 'package:mualij/features/community/repository/communitory_repository.dart
 import 'package:mualij/models/community_model.dart';
 import 'package:mualij/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
+//flair filter
+// Add this at the top-level of community_controller.dart (outside of any class)
+final selectedFilterTagsProvider = StateProvider<List<String>>((ref) => []);
 
+final filteredCommunityPostsProvider =
+    StreamProvider.family<List<Post>, String>((ref, communityName) {
+  final filterTags = ref.watch(selectedFilterTagsProvider);
+  final communityRepo = ref.watch(communityRepositoryProvider);
+
+  if (filterTags.isEmpty) {
+    // No filter initially: load all posts clearly and directly
+    return communityRepo.getCommunityPosts(communityName);
+  } else {
+    // Only if filter tags exist, filter posts clearly
+    return communityRepo.getFilteredCommunityPosts(communityName, filterTags);
+  }
+});
+
+
+
+//
 final userCommunitiesProvider = StreamProvider((ref) {
   final communityController = ref.watch(communityControllerProvider.notifier);
   return communityController.getUserCommunities();

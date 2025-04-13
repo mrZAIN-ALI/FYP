@@ -15,6 +15,8 @@ class Post {
   final String type;
   final DateTime createdAt;
   final List<String> awards;
+  final List<String> flairs;  // NEW FIELD
+
   Post({
     required this.id,
     required this.title,
@@ -30,6 +32,7 @@ class Post {
     required this.type,
     required this.createdAt,
     required this.awards,
+    required this.flairs, // mandatory list of flairs
   });
 
   Post copyWith({
@@ -47,6 +50,7 @@ class Post {
     String? type,
     DateTime? createdAt,
     List<String>? awards,
+    List<String>? flairs,
   }) {
     return Post(
       id: id ?? this.id,
@@ -63,6 +67,7 @@ class Post {
       type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       awards: awards ?? this.awards,
+      flairs: flairs ?? this.flairs,
     );
   }
 
@@ -82,6 +87,7 @@ class Post {
       'type': type,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'awards': awards,
+      'flairs': flairs,
     };
   }
 
@@ -93,20 +99,22 @@ class Post {
       description: map['description'],
       communityName: map['communityName'] ?? '',
       communityProfilePic: map['communityProfilePic'] ?? '',
-      upvotes: List<String>.from(map['upvotes']),
-      downvotes: List<String>.from(map['downvotes']),
+      upvotes: List<String>.from(map['upvotes'] ?? []),
+      downvotes: List<String>.from(map['downvotes'] ?? []),
       commentCount: map['commentCount']?.toInt() ?? 0,
       username: map['username'] ?? '',
       uid: map['uid'] ?? '',
       type: map['type'] ?? '',
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      awards: List<String>.from(map['awards']),
+      awards: List<String>.from(map['awards'] ?? []),
+      // Convert flairs to a List<String>. If the key is missing, default to an empty list.
+      flairs: map['flairs'] != null ? List<String>.from(map['flairs']) : <String>[],
     );
   }
 
   @override
   String toString() {
-    return 'Post(id: $id, title: $title, link: $link, description: $description, communityName: $communityName, communityProfilePic: $communityProfilePic, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, username: $username, uid: $uid, type: $type, createdAt: $createdAt, awards: $awards)';
+    return 'Post(id: $id, title: $title, link: $link, description: $description, communityName: $communityName, communityProfilePic: $communityProfilePic, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, username: $username, uid: $uid, type: $type, createdAt: $createdAt, awards: $awards, flairs: $flairs)';
   }
 
   @override
@@ -127,7 +135,8 @@ class Post {
         other.uid == uid &&
         other.type == type &&
         other.createdAt == createdAt &&
-        listEquals(other.awards, awards);
+        listEquals(other.awards, awards) &&
+        listEquals(other.flairs, flairs);
   }
 
   @override
@@ -145,7 +154,8 @@ class Post {
         uid.hashCode ^
         type.hashCode ^
         createdAt.hashCode ^
-        awards.hashCode;
+        awards.hashCode ^
+        flairs.hashCode;
   }
 
   get comments => null;

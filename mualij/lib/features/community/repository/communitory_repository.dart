@@ -190,6 +190,19 @@ FutureVoid updateFlair(
     return left(Failure(e.toString()));
   }
 }
+//filtering posts by flair
+
+Stream<List<Post>> getFilteredCommunityPosts(String communityName, List<String> filterTags) {
+  return _posts
+      .where('communityName', isEqualTo: communityName)
+      .where('flairs', arrayContainsAny: filterTags)
+      .orderBy('createdAt', descending: true)
+      .snapshots()
+      .map((event) => event.docs
+          .map((e) => Post.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+}
+
 
 //
   CollectionReference get _posts =>

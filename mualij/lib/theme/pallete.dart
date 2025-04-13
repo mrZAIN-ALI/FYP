@@ -97,6 +97,8 @@ class Pallete {
       brightness: Brightness.dark,
     ),
   );
+
+  static var primaryColor;
 }
 
 class ThemeNotifier extends StateNotifier<ThemeData> {

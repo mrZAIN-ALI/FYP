@@ -65,11 +65,13 @@ class PostController extends StateNotifier<bool> {
         _storageRepository = storageRepository,
         super(false);
 
+  // Updated shareTextPost with a required `flair` parameter.
   void shareTextPost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
     required String description,
+    required List<String> flairs, // make this list
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -89,6 +91,7 @@ class PostController extends StateNotifier<bool> {
       createdAt: DateTime.now(),
       awards: [],
       description: description,
+      flairs: flairs, // set flair here
     );
 
     final res = await _postRepository.addPost(post);
@@ -102,11 +105,14 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
+  // Updated shareLinkPost with a required `flair` parameter.
   void shareLinkPost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
     required String link,
+    
+    required List<String> flairs // new parameter
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -126,6 +132,7 @@ class PostController extends StateNotifier<bool> {
       createdAt: DateTime.now(),
       awards: [],
       link: link,
+      flairs: flairs, // set flair here
     );
 
     final res = await _postRepository.addPost(post);
@@ -139,12 +146,14 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
+  // Updated shareImagePost with a required `flair` parameter.
   void shareImagePost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
     required File? file,
     required Uint8List? webFile,
+    required List<String> flairs // new parameter
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -171,6 +180,7 @@ class PostController extends StateNotifier<bool> {
         createdAt: DateTime.now(),
         awards: [],
         link: r,
+        flairs: flairs, // set flair here
       );
 
       final res = await _postRepository.addPost(post);
