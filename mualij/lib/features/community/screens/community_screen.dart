@@ -11,7 +11,7 @@ import 'package:routemaster/routemaster.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
   final String name;
-  const CommunityScreen({Key? key, required this.name}) : super(key: key);
+  const CommunityScreen({super.key, required this.name});
 
   @override
   ConsumerState<CommunityScreen> createState() => _CommunityScreenState();
@@ -21,7 +21,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   @override
   void initState() {
     super.initState();
-    // Ensure filters are cleared every time this screen is loaded
+    // Clear filters on every fresh screen load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(selectedFilterTagsProvider.notifier).state = [];
     });
@@ -73,21 +73,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         community.mods.contains(user.uid)
                             ? OutlinedButton(
                                 onPressed: () => navigateToModTools(context),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                                ),
                                 child: const Text('Mod Tools'),
                               )
                             : OutlinedButton(
                                 onPressed: () => joinCommunity(community, context),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                                ),
-                                child: Text(
-                                  community.members.contains(user.uid) ? 'Joined' : 'Join',
-                                ),
+                                child: Text(community.members.contains(user.uid) ? 'Joined' : 'Join'),
                               ),
                     ],
                   ),
@@ -97,13 +87,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     children: [
                       OutlinedButton(
                         onPressed: () async {
-                          final selectedTags = await showModalBottomSheet<List<String>>(
-                            context: context,
-                            isScrollControlled: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                          final selectedTags = await Navigator.push<List<String>>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => TagFilterBottomSheet(communityName: widget.name),
                             ),
-                            builder: (_) => TagFilterBottomSheet(communityName: widget.name),
                           );
                           if (selectedTags != null) {
                             ref.read(selectedFilterTagsProvider.notifier).state = selectedTags;

@@ -16,42 +16,55 @@ class _TagFilterBottomSheetState extends ConsumerState<TagFilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      heightFactor: 0.7,
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Filter by Tags'),
+        actions: [
+          if (selectedTags.isNotEmpty)
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  selectedTags.clear();
+                });
+              },
+              child: const Text('Clear All', style: TextStyle(color: Colors.white)),
+            ),
+        ],
+      ),
+      body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text('Filter by Tags', style: Theme.of(context).textTheme.bodyMedium),
-          ),
           Expanded(
             child: ref.watch(flairControllerProvider(widget.communityName)).when(
-                  data: (flairs) => SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: flairs.map((flair) {
-                        final isSelected = selectedTags.contains(flair);
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isSelected ? selectedTags.remove(flair) : selectedTags.add(flair);
-                            });
-                          },
-                          child: Container(
-                            decoration: isSelected
-                                ? BoxDecoration(
-                                    border: Border.all(color: Colors.blue, width: 2),
-                                    borderRadius: BorderRadius.circular(16),
-                                  )
-                                : null,
-                            child: FlairChipWidget(flair: flair),
+                  data: (flairs) => flairs.isEmpty
+                      ? const Center(child: Text('No flairs found.'))
+                      : SingleChildScrollView(
+                          padding: const EdgeInsets.all(16),
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: flairs.map((flair) {
+                              final isSelected = selectedTags.contains(flair);
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSelected
+                                        ? selectedTags.remove(flair)
+                                        : selectedTags.add(flair);
+                                  });
+                                },
+                                child: Container(
+                                  decoration: isSelected
+                                      ? BoxDecoration(
+                                          border: Border.all(color: Colors.blue, width: 2),
+                                          borderRadius: BorderRadius.circular(16),
+                                        )
+                                      : null,
+                                  child: FlairChipWidget(flair: flair),
+                                ),
+                              );
+                            }).toList(),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
+                        ),
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (e, _) => Center(child: Text('Error: $e')),
                 ),
