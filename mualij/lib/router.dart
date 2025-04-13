@@ -13,6 +13,7 @@ import 'package:mualij/features/community/screens/community_screen.dart';
 import 'package:mualij/features/community/screens/create_community_screen.dart';
 import 'package:mualij/features/community/screens/edit_community_screen.dart';
 import 'package:mualij/features/community/screens/mod_tools_screen.dart';
+import 'package:mualij/features/community/screens/tagging_flairs_CRUD_screen.dart';
 import 'package:mualij/features/home/screens/home_screen.dart';
 import 'package:mualij/features/home/screens/searched_post_scren.dart';
 import 'package:mualij/features/post/screens/add_post_screen.dart';
@@ -49,6 +50,12 @@ final loggedInRoute = RouteMap(
     '/edit-community/:name': (routeData) => MaterialPage(
           child: EditCommunityScreen(
             name: routeData.pathParameters['name']!,
+          ),
+        ),
+    '/flairs/:name': (routeData) =>
+        MaterialPage(
+          child: TaggingFlairsScreen(
+            communityName: routeData.pathParameters['name']!,
           ),
         ),
     '/add-mods/:name': (routeData) => MaterialPage(

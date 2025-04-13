@@ -7,6 +7,9 @@ class Community {
   final String avatar;
   final List<String> members;
   final List<String> mods;
+  // NEW FIELD
+  final List<String> flairs;
+
   Community({
     required this.id,
     required this.name,
@@ -14,6 +17,7 @@ class Community {
     required this.avatar,
     required this.members,
     required this.mods,
+    required this.flairs,
   });
 
   Community copyWith({
@@ -23,6 +27,7 @@ class Community {
     String? avatar,
     List<String>? members,
     List<String>? mods,
+    List<String>? flairs, // Add flair copyWith field
   }) {
     return Community(
       id: id ?? this.id,
@@ -31,6 +36,7 @@ class Community {
       avatar: avatar ?? this.avatar,
       members: members ?? this.members,
       mods: mods ?? this.mods,
+      flairs: flairs ?? this.flairs,
     );
   }
 
@@ -42,6 +48,7 @@ class Community {
       'avatar': avatar,
       'members': members,
       'mods': mods,
+      'flairs': flairs, // add new field to map
     };
   }
 
@@ -53,12 +60,15 @@ class Community {
       avatar: map['avatar'] ?? '',
       members: List<String>.from(map['members']),
       mods: List<String>.from(map['mods']),
+      flairs: map['flairs'] != null 
+          ? List<String>.from(map['flairs']) 
+          : ['General', 'Urgent'], // fallback to default if not provided
     );
   }
 
   @override
   String toString() {
-    return 'Community(id: $id, name: $name, banner: $banner, avatar: $avatar, members: $members, mods: $mods)';
+    return 'Community(id: $id, name: $name, banner: $banner, avatar: $avatar, members: $members, mods: $mods, flairs: $flairs)';
   }
 
   @override
@@ -71,11 +81,18 @@ class Community {
         other.banner == banner &&
         other.avatar == avatar &&
         listEquals(other.members, members) &&
-        listEquals(other.mods, mods);
+        listEquals(other.mods, mods) &&
+        listEquals(other.flairs, flairs);
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ name.hashCode ^ banner.hashCode ^ avatar.hashCode ^ members.hashCode ^ mods.hashCode;
+    return id.hashCode ^
+        name.hashCode ^
+        banner.hashCode ^
+        avatar.hashCode ^
+        members.hashCode ^
+        mods.hashCode ^
+        flairs.hashCode;
   }
 }

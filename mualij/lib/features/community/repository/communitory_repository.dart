@@ -134,7 +134,64 @@ class CommunityRepository {
               .toList(),
         );
   }
+//Tagging/Flair
 
+FutureVoid addFlair(String communityName, String flair) async {
+  try {
+    return right(_communities.doc(communityName).update({
+      'flairs': FieldValue.arrayUnion([flair]),
+    }));
+  } on FirebaseException catch (e) {
+    return left(Failure(e.message ?? 'Error adding flair'));
+  } catch (e) {
+    return left(Failure(e.toString()));
+  }
+}
+
+FutureVoid removeFlair(String communityName, String flair) async {
+  try {
+    return right(_communities.doc(communityName).update({
+      'flairs': FieldValue.arrayRemove([flair]),
+    }));
+  } on FirebaseException catch (e) {
+    return left(Failure(e.message ?? 'Error removing flair'));
+  } catch (e) {
+    return left(Failure(e.toString()));
+  }
+}
+// Add this updateFlair method inside your CommunityRepository class:
+FutureVoid updateFlair(
+  String communityName, 
+  String oldFlair, 
+  String newFlair
+) async {
+  try {
+    await _firestore.runTransaction((transaction) async {
+      DocumentReference communityRef = _communities.doc(communityName);
+      DocumentSnapshot snapshot = await transaction.get(communityRef);
+      if (!snapshot.exists) {
+        throw 'Community not found!';
+      }
+      List<dynamic> currentFlairs = snapshot.get('flairs');
+      // Remove old flair if it exists
+      if (currentFlairs.contains(oldFlair)) {
+        currentFlairs.remove(oldFlair);
+      }
+      // Add new flair if it doesn't already exist
+      if (!currentFlairs.contains(newFlair)) {
+        currentFlairs.add(newFlair);
+      }
+      transaction.update(communityRef, {'flairs': currentFlairs});
+    });
+    return right(null);
+  } on FirebaseException catch (e) {
+    return left(Failure(e.message ?? 'Error updating flair'));
+  } catch (e) {
+    return left(Failure(e.toString()));
+  }
+}
+
+//
   CollectionReference get _posts =>
       _firestore.collection(FirebaseConstants.postsCollection);
   CollectionReference get _communities =>

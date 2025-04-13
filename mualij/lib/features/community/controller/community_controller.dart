@@ -57,25 +57,30 @@ class CommunityController extends StateNotifier<bool> {
         _storageRepository = storageRepository,
         super(false);
 
-  void createCommunity(String name, BuildContext context) async {
-    state = true;
-    final uid = _ref.read(userProvider)?.uid ?? '';
-    Community community = Community(
-      id: name,
-      name: name,
-      banner: Constants.bannerDefault,
-      avatar: Constants.avatarDefault,
-      members: [uid],
-      mods: [uid],
-    );
+void createCommunity(String name, BuildContext context) async {
+  state = true;
+  final uid = _ref.read(userProvider)?.uid ?? '';
+  Community community = Community(
+    id: name,
+    name: name,
+    banner: Constants.bannerDefault,
+    avatar: Constants.avatarDefault,
+    members: [uid],
+    mods: [uid],
+    flairs: ["General", "Urgent"], // NEW: Initialize default flairs  
+  );
 
-    final res = await _communityRepository.createCommunity(community);
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
+  final res = await _communityRepository.createCommunity(community);
+  state = false;
+  res.fold(
+    (l) => showSnackBar(context, l.message), 
+    (r) {
       showSnackBar(context, 'Community created successfully!');
       Routemaster.of(context).pop();
-    });
-  }
+    }
+  );
+}
+
 
   void joinCommunity(Community community, BuildContext context) async {
     final user = _ref.read(userProvider)!;
