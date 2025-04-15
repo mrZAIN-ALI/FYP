@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:mualij/features/ai/ai_options_screen.dart';
 import 'package:mualij/features/ai/heart_disease/screens/heart_prediction_screen.dart';
+import 'package:mualij/features/ai/pneumonia_detection/screens/pneumonia_prediction_screen.dart';
 import 'package:mualij/features/auth/screens/login_screen.dart';
 import 'package:mualij/features/auth/screens/resetpassword_screen.dart';
 import 'package:mualij/features/auth/screens/setpassowrd_screen.dart';
@@ -98,6 +99,6 @@ final loggedInRoute = RouteMap(
     // New notifications route
     '/notifications': (_) => const MaterialPage(child: NotificationScreen()),
     '/heart-prediction': (_) => MaterialPage(child: HeartPredictionScreen()),
-    // '/pneumonia': (_) => const MaterialPage(child: PneumoniaScreen()),
+    '/pneumonia': (_) => const MaterialPage(child: PneumoniaPredictionScreen()),
   },
 );

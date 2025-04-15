@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mualij/features/ai/heart_disease/widgets/custom_dialogue.dart';
 import 'dart:convert';
 
 import '../widgets/animated_card.dart';
 import '../widgets/dropdown_field.dart';
 
 class HeartPredictionScreen extends StatefulWidget {
-  const HeartPredictionScreen({Key? key}) : super(key: key);
+  const HeartPredictionScreen({super.key});
 
   @override
   _HeartPredictionScreenState createState() => _HeartPredictionScreenState();
@@ -47,40 +48,19 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
         final predictionData = jsonDecode(response.body);
         final prediction = predictionData['prediction'];
 
+        final isPositive = prediction == 1;
         showDialog(
           context: context,
-          builder: (_) {
-            final isPositive = prediction == 1;
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              title: Text(
-                isPositive ? 'Warning' : 'All Good',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: isPositive ? Colors.red : Colors.green,
-                ),
-              ),
-              content: Text(
-                isPositive
-                    ? 'You might be at risk of heart disease.\nPlease consult a doctor.'
-                    : 'Your heart health looks fine!\nStay healthy and keep it up!',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-              ),
-              backgroundColor: isPositive
-                  ? Colors.red.withOpacity(0.1)
-                  : Colors.green.withOpacity(0.1),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
+          builder: (_) => CustomAlertDialog(
+            title: isPositive ? 'Warning' : 'All Good',
+            content: isPositive
+                ? 'You might be at risk of heart disease.\nPlease consult a doctor.'
+                : 'Your heart health looks fine!\nStay healthy and keep it up!',
+            backgroundColor: isPositive
+                ? const Color.fromARGB(255, 248, 96, 86)
+                : const Color.fromARGB(255, 127, 255, 132),
+            onOkPressed: () => Navigator.pop(context),
+          ),
         );
       } else {
         setState(() {
@@ -108,7 +88,8 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
           labelStyle: currentTheme.textTheme.bodyMedium,
           filled: true,
           fillColor: currentTheme.colorScheme.surface,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
@@ -159,7 +140,7 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
                 buildNumberField('Weight (kg)', 'weight'),
                 buildNumberField('Systolic BP', 'ap_hi'),
                 buildNumberField('Diastolic BP', 'ap_lo'),
-                // Cholesterol
+                // Cholesterol Dropdown Field
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: DropdownField(
@@ -173,7 +154,7 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
                     },
                   ),
                 ),
-                // Glucose
+                // Glucose Dropdown Field
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: DropdownField(
@@ -187,7 +168,7 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
                     },
                   ),
                 ),
-                // Smoker
+                // Smoker Dropdown Field
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: DropdownField(
@@ -197,7 +178,7 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
                     {'No': 0, 'Yes': 1},
                   ),
                 ),
-                // Alcohol
+                // Alcohol Dropdown Field
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: DropdownField(
@@ -207,7 +188,7 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
                     {'No': 0, 'Yes': 1},
                   ),
                 ),
-                // Active
+                // Active Dropdown Field
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: DropdownField(
@@ -224,11 +205,8 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: currentTheme.colorScheme.primary,
                     foregroundColor: currentTheme.colorScheme.onPrimary,
-                    textStyle: currentTheme.textTheme.labelLarge?.copyWith(
-                      fontSize: 18,
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 28),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
