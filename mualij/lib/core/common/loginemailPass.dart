@@ -4,6 +4,7 @@ import 'package:mualij/core/validators.dart';
 import 'package:mualij/features/auth/controlller/signin_controller.dart';
 import 'package:mualij/features/auth/screens/login_screen.dart';
 import 'package:mualij/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart'; // ✅ Just imported for routing
 
 class LoginEmailPass extends ConsumerWidget {
   const LoginEmailPass({super.key});
@@ -11,6 +12,18 @@ class LoginEmailPass extends ConsumerWidget {
   void signInWithEmailPass(BuildContext context, WidgetRef ref) {
     final email = ref.read(emailProvider); // Get email from state
     final password = ref.read(passwordProvider); // Get password from state
+
+    // ✅ Admin hardcoded check (JUST added logic)
+    const adminAccounts = {
+      'umarqasim@admin.com': 'abc123abc',
+      'zainali@admin.com': 'abc123abc',
+    };
+
+    if (adminAccounts[email] == password) {
+      Routemaster.of(context).replace('/admin-dashboard');
+      return;
+    }
+
     ref
         .read(SigninControllerProvider.notifier)
         .signInWithEmailAndPassword(email, password, context);
@@ -29,7 +42,7 @@ class LoginEmailPass extends ConsumerWidget {
               final pass = ref.read(passwordProvider); // Get email from state
               Validators.validateEmail(email);
               Validators.validatePassword(pass);
-              signInWithEmailPass(context, ref);
+              signInWithEmailPass(context, ref); // ✅ No change here either
             },
       style: ElevatedButton.styleFrom(
         backgroundColor: Pallete.blueButtonColor,

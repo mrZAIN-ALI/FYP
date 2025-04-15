@@ -8,9 +8,11 @@ import 'package:mualij/features/auth/controlller/auth_controller.dart';
 import 'package:mualij/features/auth/repository/signup_repo.dart';
 import 'package:mualij/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
+
 // State to track username validation
-  final StateProvider<bool?> usernameValidationStateProvider =
-      StateProvider<bool?>((ref) => null); // null = idle, true = available, false = unavailable
+final StateProvider<bool?> usernameValidationStateProvider =
+    StateProvider<bool?>(
+        (ref) => null); // null = idle, true = available, false = unavailable
 
 final signupControllerProvider = StateNotifierProvider<SignupController, bool>(
   (ref) => SignupController(
@@ -56,7 +58,7 @@ class SignupController extends StateNotifier<bool> {
         if (isVerified) {
           showSnackBar(
               context, 'Email verified! Proceeding to the next step...');
-              print("email verified");
+          print("email verified");
           _ref.read(verifiedEmailProvider.notifier).state = email;
           Routemaster.of(context).push('/setpassword-screen');
         }
@@ -85,8 +87,9 @@ class SignupController extends StateNotifier<bool> {
         isAuthenticated: true,
         karma: 0,
         awards: Constants.awards.values.toList(),
-              professionalBackground: '', // default empty professional background
-      expertiseAreas: [],         // default empty list for expertise areas
+        professionalBackground: '', // default empty professional background
+        expertiseAreas: [],
+        isVerifiedDoctor: false, // default false for doctor
       );
 
       await _signupRepository.completeSignup(
@@ -113,7 +116,7 @@ class SignupController extends StateNotifier<bool> {
   }
   // Check if the username is available
 
-    // Local state for username validation
+  // Local state for username validation
   bool? _usernameState;
   bool? get usernameState => _usernameState;
 

@@ -102,6 +102,7 @@ class AuthRepository {
           karma: 0,
           professionalBackground: '', // default empty professional background
           expertiseAreas: [], // default empty list for expertise areas
+          isVerifiedDoctor: false, // default false for doctor initally
           awards: [
             'awesomeAns',
             'gold',
@@ -164,6 +165,7 @@ class AuthRepository {
         awards: [],
         professionalBackground: '', // default empty professional background
         expertiseAreas: [], // default empty list for expertise areas
+        isVerifiedDoctor: false, // default false for guest
       );
 
       await _users.doc(userCredential.user!.uid).set(userModel.toMap());

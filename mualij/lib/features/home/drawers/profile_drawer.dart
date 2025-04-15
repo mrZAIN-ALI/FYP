@@ -75,7 +75,9 @@ class ProfileDrawer extends ConsumerWidget {
             ListTile(
               leading: const Icon(Icons.verified_user),
               title: const Text('Get Verified as Doctor'),
-
+              onTap: isGuest
+                  ? null
+                  : () => Routemaster.of(context).push('/doctor-verification'),
             ),
             ListTile(
               leading: const Icon(Icons.post_add),

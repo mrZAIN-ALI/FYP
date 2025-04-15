@@ -6,11 +6,12 @@ class UserModel {
   final String profilePic;
   final String banner;
   final String uid;
-  final bool isAuthenticated; // if guest or not
+  final bool isAuthenticated;
   final int karma;
   final List<String> awards;
-  final String professionalBackground; // New field for professional background
-  final List<String> expertiseAreas;      // New field for expertise areas
+  final String professionalBackground;
+  final List<String> expertiseAreas;
+  final bool isVerifiedDoctor; // ✅ NEW FIELD
 
   UserModel({
     required this.username,
@@ -23,10 +24,11 @@ class UserModel {
     required this.awards,
     required this.professionalBackground,
     required this.expertiseAreas,
+    required this.isVerifiedDoctor, // ✅ NEW FIELD
   });
 
   UserModel copyWith({
-    String? username, // username is not changeable
+    String? username,
     String? name,
     String? profilePic,
     String? banner,
@@ -36,6 +38,7 @@ class UserModel {
     List<String>? awards,
     String? professionalBackground,
     List<String>? expertiseAreas,
+    bool? isVerifiedDoctor, // ✅ NEW FIELD
   }) {
     return UserModel(
       username: username ?? this.username,
@@ -48,6 +51,7 @@ class UserModel {
       awards: awards ?? this.awards,
       professionalBackground: professionalBackground ?? this.professionalBackground,
       expertiseAreas: expertiseAreas ?? this.expertiseAreas,
+      isVerifiedDoctor: isVerifiedDoctor ?? this.isVerifiedDoctor, // ✅ NEW FIELD
     );
   }
 
@@ -63,6 +67,7 @@ class UserModel {
       'awards': awards,
       'professionalBackground': professionalBackground,
       'expertiseAreas': expertiseAreas,
+      'isVerifiedDoctor': isVerifiedDoctor, // ✅ NEW FIELD
     };
   }
 
@@ -78,12 +83,13 @@ class UserModel {
       awards: List<String>.from(map['awards'] ?? []),
       professionalBackground: map['professionalBackground'] ?? '',
       expertiseAreas: List<String>.from(map['expertiseAreas'] ?? []),
+      isVerifiedDoctor: map['isVerifiedDoctor'] ?? false, // ✅ NEW FIELD
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(username: $username, name: $name, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, professionalBackground: $professionalBackground, expertiseAreas: $expertiseAreas)';
+    return 'UserModel(username: $username, name: $name, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, professionalBackground: $professionalBackground, expertiseAreas: $expertiseAreas, isVerifiedDoctor: $isVerifiedDoctor)';
   }
 
   @override
@@ -100,7 +106,8 @@ class UserModel {
         other.karma == karma &&
         listEquals(other.awards, awards) &&
         other.professionalBackground == professionalBackground &&
-        listEquals(other.expertiseAreas, expertiseAreas);
+        listEquals(other.expertiseAreas, expertiseAreas) &&
+        other.isVerifiedDoctor == isVerifiedDoctor; // ✅ NEW FIELD
   }
 
   @override
@@ -114,6 +121,7 @@ class UserModel {
         karma.hashCode ^
         awards.hashCode ^
         professionalBackground.hashCode ^
-        expertiseAreas.hashCode;
+        expertiseAreas.hashCode ^
+        isVerifiedDoctor.hashCode; // ✅ NEW FIELD
   }
 }

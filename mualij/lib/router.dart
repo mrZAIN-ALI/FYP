@@ -15,6 +15,8 @@ import 'package:mualij/features/community/screens/create_community_screen.dart';
 import 'package:mualij/features/community/screens/edit_community_screen.dart';
 import 'package:mualij/features/community/screens/mod_tools_screen.dart';
 import 'package:mualij/features/community/screens/tagging_flairs_CRUD_screen.dart';
+import 'package:mualij/features/doctor_verification/screens/admin_dashboard_screen.dart';
+import 'package:mualij/features/doctor_verification/screens/doctor_form_screen.dart';
 import 'package:mualij/features/home/screens/home_screen.dart';
 import 'package:mualij/features/home/screens/searched_post_scren.dart';
 import 'package:mualij/features/notifications/notification_screen.dart';
@@ -30,6 +32,7 @@ final loggedOutRoute = RouteMap(routes: {
   '/signup-screen': (_) => MaterialPage(child: SignupScreen()),
   '/setpassword-screen': (_) => MaterialPage(child: SetPasswordScreen()),
   '/resetpassword-screen': (_) => MaterialPage(child: ResetPasswordScreen()),
+  '/admin-dashboard': (_) => MaterialPage(child: AdminDashboardScreen()),
 });
 
 final loggedInRoute = RouteMap(
@@ -100,5 +103,6 @@ final loggedInRoute = RouteMap(
     '/notifications': (_) => const MaterialPage(child: NotificationScreen()),
     '/heart-prediction': (_) => MaterialPage(child: HeartPredictionScreen()),
     '/pneumonia': (_) => const MaterialPage(child: PneumoniaPredictionScreen()),
+    '/doctor-verification': (_) => MaterialPage(child: DoctorFormScreen()),
   },
 );
