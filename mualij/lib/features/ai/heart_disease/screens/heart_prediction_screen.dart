@@ -115,7 +115,7 @@ class _HeartPredictionScreenState extends State<HeartPredictionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Heart Health Predictor'),
+        title: const Text('Heart Disease Prediction'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(

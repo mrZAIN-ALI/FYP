@@ -31,9 +31,9 @@ class SignupScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.grey[300],
-                        backgroundImage: AssetImage(Constants.loginLogo),
+                      radius: 60,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage: AssetImage(Constants.loginLogo),
                     ),
                     SizedBox(height: 20),
                     Text(
@@ -80,14 +80,44 @@ class SignupScreen extends ConsumerWidget {
                         final email = emailController.text.trim();
                         final fullName = fullNameController.text.trim();
 
-                        if (email.isEmpty || fullName.isEmpty) {
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+                        final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+
+                        if (fullName.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('Please fill in all fields')),
+                            const SnackBar(
+                                content: Text('Please enter your full name')),
                           );
                           return;
                         }
 
+                        if (!nameRegex.hasMatch(fullName)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Name must contain only letters and spaces')),
+                          );
+                          return;
+                        }
+
+                        if (email.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text('Please enter your email address')),
+                          );
+                          return;
+                        }
+
+                        if (!emailRegex.hasMatch(email)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Please enter a valid email')),
+                          );
+                          return;
+                        }
+
+                        // ✅ All good — proceed
                         controller.sendEmailVerification(context, email);
                       },
                       child: Text('Continue',

@@ -102,53 +102,65 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
               SizedBox(height: 20),
               // Sign Up button
               ElevatedButton(
-                onPressed: () async {
-                  final username = usernameController.text.trim();
-                  final password = passwordController.text.trim();
-                  final confirmPassword = confirmPasswordController.text.trim();
+onPressed: () async {
+  final username = usernameController.text.trim();
+  final password = passwordController.text.trim();
+  final confirmPassword = confirmPasswordController.text.trim();
 
-                  if (username.isEmpty ||
-                      password.isEmpty ||
-                      confirmPassword.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("All fields are required!")),
-                    );
-                    return;
-                  }
+  if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("All fields are required!")),
+    );
+    return;
+  }
 
-                  if (password != confirmPassword) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Passwords do not match!")),
-                    );
-                    return;
-                  }
+  // ✅ Password strength validation
+  final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*(),.?":{}|<>]).{8,}$');
+  if (!passwordRegex.hasMatch(password)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Password must be at least 8 characters, include upper/lowercase, number, and special character")),
+    );
+    return;
+  }
 
-                  if (email.isEmpty || fullName.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Email or Full Name not found!")),
-                    );
-                    return;
-                  }
+  // ✅ Confirm password match
+  if (password != confirmPassword) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Passwords do not match!")),
+    );
+    return;
+  }
 
-                  final isUsernameAvailable = await ref
-                      .read(signupControllerProvider.notifier)
-                      .checkUsername(context, username);
+  // ✅ Email & name must exist (state check)
+  if (email.isEmpty || fullName.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Email or Full Name not found!")),
+    );
+    return;
+  }
 
-                  if (isUsernameAvailable == false) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Username is not available!")),
-                    );
-                    return;
-                  }
+  // ✅ Username availability check
+  final isUsernameAvailable = await ref
+      .read(signupControllerProvider.notifier)
+      .checkUsername(context, username);
 
-                  ref.read(signupControllerProvider.notifier).completeSignup(
-                        context: context,
-                        email: email,
-                        password: password,
-                        fullName: fullName,
-                        uname: username,
-                      );
-                },
+  if (isUsernameAvailable == false) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Username is not available!")),
+    );
+    return;
+  }
+
+  // ✅ All validations passed – proceed to complete signup
+  ref.read(signupControllerProvider.notifier).completeSignup(
+        context: context,
+        email: email,
+        password: password,
+        fullName: fullName,
+        uname: username,
+      );
+},
+
                 child: Text(
                   'Sign Up',
                   style: TextStyle(

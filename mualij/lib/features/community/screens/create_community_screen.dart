@@ -21,12 +21,30 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     communityNameController.dispose();
   }
 
-  void createCommunity() {
-    ref.read(communityControllerProvider.notifier).createCommunity(
-          communityNameController.text.trim(),
-          context,
-        );
+
+void createCommunity() {
+  final name = communityNameController.text.trim();
+
+  if (name.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Community name is required.")),
+    );
+    return;
   }
+
+  if (name.contains(' ')) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Community name must not contain spaces.")),
+    );
+    return;
+  }
+
+  ref.read(communityControllerProvider.notifier).createCommunity(
+        name,
+        context,
+      );
+}
+
 
   @override
   Widget build(BuildContext context) {

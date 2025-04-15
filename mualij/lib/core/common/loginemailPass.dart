@@ -10,13 +10,13 @@ class LoginEmailPass extends ConsumerWidget {
   const LoginEmailPass({super.key});
 
   void signInWithEmailPass(BuildContext context, WidgetRef ref) {
-    final email = ref.read(emailProvider); // Get email from state
-    final password = ref.read(passwordProvider); // Get password from state
+    final email = ref.read(emailProvider).trim(); // Get email from state
+    final password = ref.read(passwordProvider).trim(); // Get password from state
 
     // ✅ Admin hardcoded check (JUST added logic)
     const adminAccounts = {
-      'umarqasim@admin.com': 'abc123abc',
-      'zainali@admin.com': 'abc123abc',
+      'umarqasim@admin.com': 'abc#1Abc',
+      'zainali@admin.com': 'abc#1Abc',
     };
 
     if (adminAccounts[email] == password) {
@@ -35,15 +35,33 @@ class LoginEmailPass extends ConsumerWidget {
         ref.watch(SigninControllerProvider); // Watch loading state
 
     return ElevatedButton(
-      onPressed: isLoading
-          ? null // Disable button when loading
-          : () {
-              final email = ref.read(emailProvider); // Get email from state
-              final pass = ref.read(passwordProvider); // Get email from state
-              Validators.validateEmail(email);
-              Validators.validatePassword(pass);
-              signInWithEmailPass(context, ref); // ✅ No change here either
-            },
+onPressed: isLoading
+    ? null
+    : () {
+        final email = ref.read(emailProvider).trim();
+        final pass = ref.read(passwordProvider).trim();
+
+        final emailError = Validators.validateEmail(email);
+        final passError = Validators.validatePassword(pass);
+
+        if (emailError != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(emailError)),
+          );
+          return;
+        }
+
+        if (passError != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(passError)),
+          );
+          return;
+        }
+
+        // ✅ All validations passed
+        signInWithEmailPass(context, ref);
+      },
+
       style: ElevatedButton.styleFrom(
         backgroundColor: Pallete.blueButtonColor,
         minimumSize: const Size(double.infinity, 50),
