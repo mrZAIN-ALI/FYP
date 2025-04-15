@@ -67,6 +67,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                         radius: 45,
                       ),
                     ),
+                    
                     Container(
                       alignment: Alignment.bottomLeft,
                       padding: const EdgeInsets.all(20),
@@ -85,7 +86,32 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                     ),
                   ],
                 ),
+                
               ),
+              SliverToBoxAdapter(
+  child: Padding(
+    padding: const EdgeInsets.only(left: 20, top: 8, bottom: 4),
+    child: Row(
+      children: [
+        Text(
+          'u/${user.username}',
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(width: 6),
+        if (user.isVerifiedDoctor)
+          const Icon(
+            Icons.verified,
+            color: Colors.blue,
+            size: 18,
+          ),
+      ],
+    ),
+  ),
+),
+
               // Display Professional Background and Expertise using Cards:
               SliverToBoxAdapter(
                 child: Padding(

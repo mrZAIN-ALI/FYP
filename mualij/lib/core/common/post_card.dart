@@ -98,10 +98,24 @@ class PostCard extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () => navigateToUser(context),
-                          child: Text(
-                            'u/${post.username}',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.grey),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'u/${post.username}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              if (user.isVerifiedDoctor)
+                                Icon(
+                                  Icons.verified,
+                                  color: Colors.blue,
+                                  size: 16,
+                                ),
+                            ],
                           ),
                         ),
                       ],
