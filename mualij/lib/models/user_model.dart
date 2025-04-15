@@ -9,6 +9,9 @@ class UserModel {
   final bool isAuthenticated; // if guest or not
   final int karma;
   final List<String> awards;
+  final String professionalBackground; // New field for professional background
+  final List<String> expertiseAreas;      // New field for expertise areas
+
   UserModel({
     required this.username,
     required this.name,
@@ -18,6 +21,8 @@ class UserModel {
     required this.isAuthenticated,
     required this.karma,
     required this.awards,
+    required this.professionalBackground,
+    required this.expertiseAreas,
   });
 
   UserModel copyWith({
@@ -29,6 +34,8 @@ class UserModel {
     bool? isAuthenticated,
     int? karma,
     List<String>? awards,
+    String? professionalBackground,
+    List<String>? expertiseAreas,
   }) {
     return UserModel(
       username: username ?? this.username,
@@ -39,6 +46,8 @@ class UserModel {
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       karma: karma ?? this.karma,
       awards: awards ?? this.awards,
+      professionalBackground: professionalBackground ?? this.professionalBackground,
+      expertiseAreas: expertiseAreas ?? this.expertiseAreas,
     );
   }
 
@@ -52,6 +61,8 @@ class UserModel {
       'isAuthenticated': isAuthenticated,
       'karma': karma,
       'awards': awards,
+      'professionalBackground': professionalBackground,
+      'expertiseAreas': expertiseAreas,
     };
   }
 
@@ -64,13 +75,15 @@ class UserModel {
       uid: map['uid'] ?? '',
       isAuthenticated: map['isAuthenticated'] ?? false,
       karma: map['karma']?.toInt() ?? 0,
-      awards: List<String>.from(map['awards']),
+      awards: List<String>.from(map['awards'] ?? []),
+      professionalBackground: map['professionalBackground'] ?? '',
+      expertiseAreas: List<String>.from(map['expertiseAreas'] ?? []),
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(username: $username, name: $name, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards)';
+    return 'UserModel(username: $username, name: $name, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, professionalBackground: $professionalBackground, expertiseAreas: $expertiseAreas)';
   }
 
   @override
@@ -85,19 +98,22 @@ class UserModel {
         other.uid == uid &&
         other.isAuthenticated == isAuthenticated &&
         other.karma == karma &&
-        listEquals(other.awards, awards);
+        listEquals(other.awards, awards) &&
+        other.professionalBackground == professionalBackground &&
+        listEquals(other.expertiseAreas, expertiseAreas);
   }
 
   @override
   int get hashCode {
-    return 
-        username.hashCode ^
+    return username.hashCode ^
         name.hashCode ^
         profilePic.hashCode ^
         banner.hashCode ^
         uid.hashCode ^
         isAuthenticated.hashCode ^
         karma.hashCode ^
-        awards.hashCode;
+        awards.hashCode ^
+        professionalBackground.hashCode ^
+        expertiseAreas.hashCode;
   }
 }

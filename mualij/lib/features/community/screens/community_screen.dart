@@ -132,6 +132,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         error: (error, _) => ErrorText(error: error.toString()),
         loading: () => const Loader(),
       ),
-    );
+    ); 
   }
 }

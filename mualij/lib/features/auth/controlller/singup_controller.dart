@@ -85,6 +85,8 @@ class SignupController extends StateNotifier<bool> {
         isAuthenticated: true,
         karma: 0,
         awards: Constants.awards.values.toList(),
+              professionalBackground: '', // default empty professional background
+      expertiseAreas: [],         // default empty list for expertise areas
       );
 
       await _signupRepository.completeSignup(

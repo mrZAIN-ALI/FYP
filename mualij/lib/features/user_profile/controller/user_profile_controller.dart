@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,6 +46,8 @@ class UserProfileController extends StateNotifier<bool> {
     required Uint8List? bannerWebFile,
     required BuildContext context,
     required String name,
+    required String professionalBackground,
+    required List<String> expertiseAreas,
   }) async {
     state = true;
     UserModel user = _ref.read(userProvider)!;
@@ -77,7 +78,12 @@ class UserProfileController extends StateNotifier<bool> {
       );
     }
 
-    user = user.copyWith(name: name);
+    user = user.copyWith(
+      name: name,
+      professionalBackground: professionalBackground,
+      expertiseAreas: expertiseAreas,
+    );
+
     final res = await _userProfileRepository.editProfile(user);
     state = false;
     res.fold(
@@ -98,7 +104,9 @@ class UserProfileController extends StateNotifier<bool> {
     user = user.copyWith(karma: user.karma + karma.karma);
 
     final res = await _userProfileRepository.updateUserKarma(user);
-    res.fold((l) => null,
-        (r) => _ref.read(userProvider.notifier).update((state) => user));
+    res.fold(
+      (l) => null,
+      (r) => _ref.read(userProvider.notifier).update((state) => user),
+    );
   }
 }

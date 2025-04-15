@@ -25,6 +25,8 @@ class UserProfileRepository {
 
   FutureVoid editProfile(UserModel user) async {
     try {
+      // The updated user.toMap() now includes the new fields:
+      // 'professionalBackground' and 'expertiseAreas'
       return right(_users.doc(user.uid).update(user.toMap()));
     } on FirebaseException catch (e) {
       throw e.message!;
@@ -41,9 +43,7 @@ class UserProfileRepository {
         .map(
           (event) => event.docs
               .map(
-                (e) => Post.fromMap(
-                  e.data() as Map<String, dynamic>,
-                ),
+                (e) => Post.fromMap(e.data() as Map<String, dynamic>),
               )
               .toList(),
         );
