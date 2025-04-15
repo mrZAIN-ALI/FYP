@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mualij/features/ai/ai_options_screen.dart';
-import 'package:mualij/features/ai/hear_dis_screen.dart';
+import 'package:mualij/features/ai/heart_disease/screens/heart_prediction_screen.dart';
 import 'package:mualij/features/auth/screens/login_screen.dart';
 import 'package:mualij/features/auth/screens/resetpassword_screen.dart';
 import 'package:mualij/features/auth/screens/setpassowrd_screen.dart';
@@ -16,6 +16,7 @@ import 'package:mualij/features/community/screens/mod_tools_screen.dart';
 import 'package:mualij/features/community/screens/tagging_flairs_CRUD_screen.dart';
 import 'package:mualij/features/home/screens/home_screen.dart';
 import 'package:mualij/features/home/screens/searched_post_scren.dart';
+import 'package:mualij/features/notifications/notification_screen.dart';
 import 'package:mualij/features/post/screens/add_post_screen.dart';
 import 'package:mualij/features/post/screens/add_post_type_screen.dart';
 import 'package:mualij/features/post/screens/comments_screen.dart';
@@ -52,8 +53,7 @@ final loggedInRoute = RouteMap(
             name: routeData.pathParameters['name']!,
           ),
         ),
-    '/flairs/:name': (routeData) =>
-        MaterialPage(
+    '/flairs/:name': (routeData) => MaterialPage(
           child: TaggingFlairsScreen(
             communityName: routeData.pathParameters['name']!,
           ),
@@ -94,5 +94,10 @@ final loggedInRoute = RouteMap(
 
     '/ai-options': (_) => const MaterialPage(child: AIOptionsScreen()),
     // '/heart-disease': (_) => const MaterialPage(child: HeartDiseaseScreen()),
+
+    // New notifications route
+    '/notifications': (_) => const MaterialPage(child: NotificationScreen()),
+    '/heart-prediction': (_) => MaterialPage(child: HeartPredictionScreen()),
+    // '/pneumonia': (_) => const MaterialPage(child: PneumoniaScreen()),
   },
 );

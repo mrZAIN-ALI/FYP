@@ -6,17 +6,18 @@ import 'package:mualij/core/enums/enums.dart';
 import 'package:mualij/core/providers/storage_repository_provider.dart';
 import 'package:mualij/core/utils.dart';
 import 'package:mualij/features/auth/controlller/auth_controller.dart';
+import 'package:mualij/features/notifications/notification_repository.dart';
 import 'package:mualij/features/post/repository/post_repository.dart';
 import 'package:mualij/features/user_profile/controller/user_profile_controller.dart';
 import 'package:mualij/models/comment_model.dart';
 import 'package:mualij/models/community_model.dart';
 import 'package:mualij/models/post_model.dart';
+import 'package:mualij/models/notification_model.dart';
 import 'package:mualij/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
-final postControllerProvider =
-    StateNotifierProvider<PostController, bool>((ref) {
+final postControllerProvider = StateNotifierProvider<PostController, bool>((ref) {
   final postRepository = ref.watch(postRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
   return PostController(
@@ -26,8 +27,7 @@ final postControllerProvider =
   );
 });
 
-final userPostsProvider =
-    StreamProvider.family((ref, List<Community> communities) {
+final userPostsProvider = StreamProvider.family((ref, List<Community> communities) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.fetchUserPosts(communities);
 });
@@ -65,13 +65,13 @@ class PostController extends StateNotifier<bool> {
         _storageRepository = storageRepository,
         super(false);
 
-  // Updated shareTextPost with a required `flair` parameter.
+  // shareTextPost with flair parameter.
   void shareTextPost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
     required String description,
-    required List<String> flairs, // make this list
+    required List<String> flairs,
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -91,13 +91,11 @@ class PostController extends StateNotifier<bool> {
       createdAt: DateTime.now(),
       awards: [],
       description: description,
-      flairs: flairs, // set flair here
+      flairs: flairs,
     );
 
     final res = await _postRepository.addPost(post);
-    _ref
-        .read(userProfileControllerProvider.notifier)
-        .updateUserKarma(UserKarma.textPost);
+    _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.textPost);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted successfully!');
@@ -105,14 +103,13 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
-  // Updated shareLinkPost with a required `flair` parameter.
+  // shareLinkPost with flair parameter.
   void shareLinkPost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
     required String link,
-    
-    required List<String> flairs // new parameter
+    required List<String> flairs,
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -132,13 +129,11 @@ class PostController extends StateNotifier<bool> {
       createdAt: DateTime.now(),
       awards: [],
       link: link,
-      flairs: flairs, // set flair here
+      flairs: flairs,
     );
 
     final res = await _postRepository.addPost(post);
-    _ref
-        .read(userProfileControllerProvider.notifier)
-        .updateUserKarma(UserKarma.linkPost);
+    _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.linkPost);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted successfully!');
@@ -146,14 +141,14 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
-  // Updated shareImagePost with a required `flair` parameter.
+  // shareImagePost with flair parameter.
   void shareImagePost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
     required File? file,
     required Uint8List? webFile,
-    required List<String> flairs // new parameter
+    required List<String> flairs,
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -180,19 +175,62 @@ class PostController extends StateNotifier<bool> {
         createdAt: DateTime.now(),
         awards: [],
         link: r,
-        flairs: flairs, // set flair here
+        flairs: flairs,
       );
 
       final res = await _postRepository.addPost(post);
-      _ref
-          .read(userProfileControllerProvider.notifier)
-          .updateUserKarma(UserKarma.imagePost);
+      _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.imagePost);
       state = false;
       res.fold((l) => showSnackBar(context, l.message), (r) {
         showSnackBar(context, 'Posted successfully!');
         Routemaster.of(context).pop();
       });
     });
+  }
+
+  // Updated upvote function which now triggers a notification.
+  void upvote(Post post) async {
+    final user = _ref.read(userProvider)!;
+    final uid=user.uid;
+    _postRepository.upvote(post, uid);
+    // Only add notification if the upvoter is not the owner.
+    if (uid != post.uid) {
+      final notification = NotificationModel(
+        id: const Uuid().v1(),
+        postId: post.id,
+        notificationType: "upvote",
+        receiverId: post.uid,
+        senderId: uid,
+        timestamp: DateTime.now(),
+        isRead: false,
+                      postTitle: post.title,           // Added
+      senderUsername: user.username,
+      );
+      await _ref.read(notificationRepositoryProvider).addNotification(notification);
+    }
+  }
+
+  // Updated downvote function which now triggers a notification.
+  void downvote(Post post) async {
+        final user = _ref.read(userProvider)!;
+    final uid=user.uid;
+    _postRepository.downvote(post, uid);
+    
+    // Only add notification if the downvoter is not the owner.
+    if (uid != post.uid) {
+      final notification = NotificationModel(
+        id: const Uuid().v1(),
+        postId: post.id,
+        notificationType: "downvote",
+        receiverId: post.uid,
+        senderId: uid,
+        timestamp: DateTime.now(),
+        isRead: false,
+              postTitle: post.title,           // Added
+      senderUsername: user.username,   // Added
+      );
+      await _ref.read(notificationRepositoryProvider).addNotification(notification);
+    }
   }
 
   Stream<List<Post>> fetchUserPosts(List<Community> communities) {
@@ -208,21 +246,9 @@ class PostController extends StateNotifier<bool> {
 
   void deletePost(Post post, BuildContext context) async {
     final res = await _postRepository.deletePost(post);
-    _ref
-        .read(userProfileControllerProvider.notifier)
-        .updateUserKarma(UserKarma.deletePost);
+    _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.deletePost);
     res.fold((l) => null,
-        (r) => showSnackBar(context, 'Post Deleted successfully!'));
-  }
-
-  void upvote(Post post) async {
-    final uid = _ref.read(userProvider)!.uid;
-    _postRepository.upvote(post, uid);
-  }
-
-  void downvote(Post post) async {
-    final uid = _ref.read(userProvider)!.uid;
-    _postRepository.downvote(post, uid);
+        (r) => showSnackBar(context, 'Post deleted successfully!'));
   }
 
   Stream<Post> getPostById(String postId) {
@@ -249,9 +275,7 @@ class PostController extends StateNotifier<bool> {
       profilePic: user.profilePic,
     );
     final res = await _postRepository.addComment(comment);
-    _ref
-        .read(userProfileControllerProvider.notifier)
-        .updateUserKarma(UserKarma.comment);
+    _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.comment);
     res.fold((l) => showSnackBar(context, l.message), (r) => null);
   }
 
@@ -261,13 +285,9 @@ class PostController extends StateNotifier<bool> {
     required BuildContext context,
   }) async {
     final user = _ref.read(userProvider)!;
-
     final res = await _postRepository.awardPost(post, award, user.uid);
-
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      _ref
-          .read(userProfileControllerProvider.notifier)
-          .updateUserKarma(UserKarma.awardPost);
+      _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.awardPost);
       _ref.read(userProvider.notifier).update((state) {
         state?.awards.remove(award);
         return state;

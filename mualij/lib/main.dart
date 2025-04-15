@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,16 +13,33 @@ import 'package:mualij/models/user_model.dart';
 import 'package:mualij/router.dart';
 import 'package:mualij/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-//testing git
+
+/// Custom HttpOverrides to bypass SSL certificate verification during development.
+/// Remove or disable this in production.
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    final httpClient = super.createHttpClient(context);
+    // Accept all certificates
+    httpClient.badCertificateCallback = 
+        (X509Certificate cert, String host, int port) => true;
+    return httpClient;
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Set the custom HttpOverrides for development purposes.
+  HttpOverrides.global = MyHttpOverrides();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   runApp(
     Phoenix(
-      // Wrap your app with Phoenix
+      // Wrap your app with Phoenix.
       child: const ProviderScope(
         child: MyApp(),
       ),
@@ -40,15 +58,6 @@ class _MyAppState extends ConsumerState<MyApp> {
   UserModel? userModel;
   bool isLoadingUser = false;
 
-  // Future<void> getData(WidgetRef ref, User data) async {
-  //   setState(() => isLoadingUser = true);
-  //   userModel = await ref
-  //       .watch(authControllerProvider.notifier)
-  //       .getUserData(data.uid)
-  //       .first;
-  //   ref.read(userProvider.notifier).update((state) => userModel);
-  //   setState(() => isLoadingUser = false);
-  // }
   Future<void> getData(WidgetRef ref, User data) async {
     try {
       setState(() => isLoadingUser = true);
@@ -58,7 +67,6 @@ class _MyAppState extends ConsumerState<MyApp> {
           .first;
       ref.read(userProvider.notifier).update((state) => userModel);
     } catch (e) {
-      // Log the error or show an appropriate message
       print('Error fetching user data: $e');
     } finally {
       setState(() => isLoadingUser = false);
@@ -67,10 +75,9 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
-  final isTemporaryUser = ref.watch(isTemporaryUserProvider);
+    final isTemporaryUser = ref.watch(isTemporaryUserProvider);
     if (isTemporaryUser) {
-      // Handle the case when isTemporaryUser is active
+      // Handle temporary (logged out) user state.
       return MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Mualij',
@@ -100,7 +107,6 @@ class _MyAppState extends ConsumerState<MyApp> {
                 );
               }
             }
-
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               title: 'Mualij',
@@ -111,8 +117,10 @@ class _MyAppState extends ConsumerState<MyApp> {
               routeInformationParser: const RoutemasterParser(),
             );
           },
-          error: (error, stackTrace) => ErrorText(error: error.toString()),
+          error: (error, stackTrace) =>
+              ErrorText(error: error.toString()),
           loading: () => const Loader(),
         );
   }
 }
+ 

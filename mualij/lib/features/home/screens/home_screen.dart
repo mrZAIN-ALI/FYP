@@ -114,7 +114,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Routemaster.of(context).push('/ai-options');
         break;
       case 3:
-        Routemaster.of(context).push('/');
+        Routemaster.of(context).push('/notifications');
         break;
     }
   }
